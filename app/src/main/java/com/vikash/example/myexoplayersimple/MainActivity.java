@@ -4,6 +4,7 @@ import android.media.MediaCodec;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.SurfaceView;
 
 import com.google.android.exoplayer.ExoPlayer;
@@ -14,7 +15,11 @@ import com.google.android.exoplayer.extractor.ExtractorSampleSource;
 import com.google.android.exoplayer.upstream.Allocator;
 import com.google.android.exoplayer.upstream.DataSource;
 import com.google.android.exoplayer.upstream.DefaultAllocator;
+import com.google.android.exoplayer.upstream.DefaultHttpDataSource;
 import com.google.android.exoplayer.upstream.DefaultUriDataSource;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,9 +40,31 @@ public class MainActivity extends AppCompatActivity {
 
         //String userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:40.0) Gecko/20100101 Firefox/40.0";
         String userAgent = System.getProperty("http.agent");
-        String url = "https://archive.org/download/Popeye_forPresident/Popeye_forPresident_512kb.mp4";
+        //String url = "https://archive.org/download/Popeye_forPresident/Popeye_forPresident_512kb.mp4";
+        String url = "http://ic1bLDDa:NoVNx7nC@172.16.12.100:80/openhome/streaming/channels/0/flv";
+
+
+        Map<String, String> params = new HashMap<String, String>(1);
+        final String cred = "ic1bLDDa" + ":" + "NoVNx7nC";
+        final String auth = "Basic "+ Base64.encodeToString(cred.getBytes(),Base64.URL_SAFE|Base64.NO_WRAP);
+
+        DefaultHttpDataSource dataSource = new DefaultHttpDataSource(userAgent, null);
+        dataSource.setRequestProperty("Authorization", auth);
+        dataSource.setRequestProperty("Accept", "...");
+
+//        ExtractorSampleSource sampleSource = new ExtractorSampleSource(uri, source, extractor, 2,
+//                BUFFER_SIZE);
+//        MediaCodecVideoTrackRenderer videoRenderer = new MediaCodecVideoTrackRenderer(sampleSource,
+//                null, true, MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING, 5000, null, player.getMainHandler(),
+//                player, 50);
+//        MediaCodecAudioTrackRenderer audioRenderer = new MediaCodecAudioTrackRenderer(sampleSource,
+//                null, true, player.getMainHandler(), player);
+
+     ////////////////////////////////////////////////////////////
+
+        
         Allocator allocator = new DefaultAllocator(minBufferMs);
-        DataSource dataSource = new DefaultUriDataSource(this, null, userAgent);
+       // DataSource dataSource = new DefaultUriDataSource(this, null, userAgent);
 
 
         ExtractorSampleSource sampleSource = new ExtractorSampleSource( Uri.parse(url), dataSource, allocator,
